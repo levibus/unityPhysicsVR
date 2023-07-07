@@ -7,8 +7,10 @@ public class BallScript : MonoBehaviour
 {
 
     EventManager eventManager;
+    angleEM arrowEventManager;
 
     private float force = 1.0f;
+    public Vector3 startingPoint = new Vector3(0.0f, 1.5f, 0.0f);
 
     // public event EventHandler<OnBallStartEventArgs> OnBallStart;
     // public class OnBallStartEventArgs : EventArgs {
@@ -19,7 +21,7 @@ public class BallScript : MonoBehaviour
     public Rigidbody rb;
     public Vector3 velocityVector;
     public Vector3 positionVector;
-    public Vector3 eulerAngles;
+    public float launchAngle = 45.0f;
     // public Button resetButton;
 
     void Start()
@@ -27,13 +29,14 @@ public class BallScript : MonoBehaviour
         // private InputDeviceCharacterics n_characteristics;
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
-        // velocityVector = new Vector3(0.0f, 0.0f, 0.0f);
-        // positionVector = new Vector3(0.0f, 1.5f, 0.0f);
-        eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
-        // resetButton.onClick.AddListener(reset);
+       
         eventManager = FindObjectOfType<EventManager>();
         eventManager.onBallLaunch += LaunchBall;
         eventManager.onBallReset += reset;
+
+        arrowEventManager = FindObjectOfType<angleEM>();
+        arrowEventManager.onAngleIncrease += increaseAngle;
+        arrowEventManager.onAngleDecrease += decreaseAngle;
     }
 
     void Update()
@@ -48,15 +51,26 @@ public class BallScript : MonoBehaviour
 
     }
 
+    void increaseAngle() {
+        if (launchAngle < 90.0f) {
+            launchAngle += 5.0f;
+        }
+    }
+
+    void decreaseAngle() {
+        if (launchAngle > 0.0f) {
+            launchAngle -= 5.0f;
+        }
+    } 
 
     public void LaunchBall() {
         rb.useGravity = true;
-        rb.AddForce(force * eulerAngles, ForceMode.VelocityChange);
+        rb.AddForce(force * new Vector3(launchAngle, 90.0f, 0.0f), ForceMode.VelocityChange);
     }
 
     public void reset() {
         rb.useGravity = false;
-        transform.position = new Vector3(0.0f, 1.5f, 0.0f);
+        transform.position = startingPoint;
     }
 
 }
