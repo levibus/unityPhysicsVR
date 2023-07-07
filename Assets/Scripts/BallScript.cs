@@ -9,7 +9,7 @@ public class BallScript : MonoBehaviour
     EventManager eventManager;
     angleEM arrowEventManager;
 
-    private float force = 1.0f;
+    private float force = 500.0f;
     public Vector3 startingPoint = new Vector3(0.0f, 1.5f, 0.0f);
 
     // public event EventHandler<OnBallStartEventArgs> OnBallStart;
@@ -64,13 +64,20 @@ public class BallScript : MonoBehaviour
     } 
 
     public void LaunchBall() {
+        // transform.eulerAngles = new Vector3(launchAngle, 0.0f, 0.0f);
+        // rb.useGravity = true;
+        // rb.AddForce(force * transform.up);
+
         rb.useGravity = true;
-        rb.AddForce(force * new Vector3(launchAngle, 90.0f, 0.0f), ForceMode.VelocityChange);
+        float normalizedAngle = launchAngle / 90.0f;
+        Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
+        rb.AddForce(force * angle);
     }
 
     public void reset() {
         rb.useGravity = false;
         transform.position = startingPoint;
+        rb.velocity = Vector3.zero;
     }
 
 }

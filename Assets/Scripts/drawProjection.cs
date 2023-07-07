@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class drawProjection : MonoBehaviour
 {
-    ObjectCenter objectCenter;
+    public ObjectCenter objectCenter;
     LineRenderer lineRenderer;
 
     public int numPoints = 50;

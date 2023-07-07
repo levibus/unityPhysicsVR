@@ -778,7 +778,9 @@ GameObject:
   - component: {fileID: 1842919138}
   - component: {fileID: 1842919139}
   - component: {fileID: 1842919140}
-  m_Layer: 0
+  - component: {fileID: 1842919141}
+  - component: {fileID: 1842919142}
+  m_Layer: 6
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -892,6 +894,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingPosition: {x: 0, y: 1.5, z: 0}
+  rb: {fileID: 1842919138}
   velArrowObject: {fileID: 952653079}
   accArrowObject: {fileID: 149732034}
   launchAngle: 45
@@ -1004,6 +1007,41 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &1842919141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842919133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6256663adb55e7442bb98072a1a29307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingPoint: {x: 0, y: 1.5, z: 0}
+  rb: {fileID: 1842919138}
+  velocityVector: {x: 0, y: 0, z: 0}
+  positionVector: {x: 0, y: 0, z: 0}
+  launchAngle: 45
+--- !u!114 &1842919142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1842919133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb5e15443283c914a905ef7a29ce18bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectCenter: {fileID: 1842919139}
+  numPoints: 50
+  timeBetweenPoints: 0.1
+  CollidableLayers:
+    serializedVersion: 2
+    m_Bits: 55
 --- !u!1 &1857766535
 GameObject:
   m_ObjectHideFlags: 0

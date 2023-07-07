@@ -21,4 +21,12 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    void Update() {
+        if (Input.GetKeyUp("space")) {
+            onBallLaunch();
+        }
+        if (Input.GetKeyUp("r")) {
+            onBallReset();
+        }
+    }
 }

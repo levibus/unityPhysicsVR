@@ -11,6 +11,9 @@ public class ObjectCenter : MonoBehaviour
 
     public Vector3 startingPosition = new Vector3(0.0f, 1.5f, 0.0f);
 
+    public Rigidbody rb; 
+    float normalizedAngle = 0.0f;
+
     public GameObject velArrowObject; // the empty game object made so that the arrow rotates correctly
     public GameObject accArrowObject; // ditto
     // public GameObject velArrow; // starts as a prefab, then is instantiated and reassigned to the actual created object
@@ -53,6 +56,8 @@ public class ObjectCenter : MonoBehaviour
         arrowEventManager = FindObjectOfType<angleEM>();
         arrowEventManager.onAngleIncrease += increaseAngle;
         arrowEventManager.onAngleDecrease += decreaseAngle;
+
+        rb = GetComponent<Rigidbody>();
 
         // instatiate the arrows from the assigned prefabs and replace the prefabs with these actual objects
         // velArrow = Instantiate(velArrow, transform.position, transform.rotation);
@@ -129,14 +134,14 @@ public class ObjectCenter : MonoBehaviour
     }
 
     void increaseAngle() {
-        if (launchAngle < 90.0f) {
-            launchAngle += 5.0f;
+        if (launchAngle > 0.0f) {
+            launchAngle -= 5.0f;
         }
     }
 
     void decreaseAngle() {
-        if (launchAngle > 0.0f) {
-            launchAngle -= 5.0f;
+        if (launchAngle < 90.0f) {
+            launchAngle += 5.0f;
         }
     }
 
@@ -149,9 +154,14 @@ public class ObjectCenter : MonoBehaviour
         accArrowObject.transform.position = transform.position;
 
         //rotate arrows
-        
-        velArrowObject.transform.rotation = Quaternion.LookRotation(currentVel,Vector3.up);
-        accArrowObject.transform.rotation = Quaternion.LookRotation(currentAcc,Vector3.up);
+
+        // float normalizedAngle = launchAngle / 90.0f;
+        // Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
+        if (rb.velocity.y + rb.velocity.z != 0) {
+            normalizedAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);
+        }
+
+        velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAngle), normalizedAngle, 0.0f);
 
         // if acceleration or velocity magnitude is too small, don't display corresponding arrow
 
@@ -160,7 +170,7 @@ public class ObjectCenter : MonoBehaviour
         if (transform.position == startingPosition) {
             velArrowObject.SetActive(true);
             velArrowObject.transform.localScale = new Vector3(1.0f, launchSpeed, 1.0f);            // might need to be VArrowContainer
-            velArrowObject.transform.eulerAngles = new Vector3(launchAngle, 90.0f, 0.0f);
+            velArrowObject.transform.eulerAngles = new Vector3(launchAngle, 0.0f, 0.0f);
         }
         if (currentVel.magnitude <= minSize && transform.position != startingPosition)
         {
@@ -168,18 +178,18 @@ public class ObjectCenter : MonoBehaviour
         }
         else if (transform.position != startingPosition) {
             velArrowObject.SetActive(true);
-            velArrowObject.transform.localScale = new Vector3(1f, lengthScaling*currentVel.magnitude, 1f);
+            velArrowObject.transform.localScale = new Vector3(1f, lengthScaling * rb.velocity.magnitude, 1f);
         }
 
         if (currentAcc.magnitude <= minSize)
         {
             accArrowObject.SetActive(false);
         }
-        else
-        {
-            accArrowObject.SetActive(true);
-            accArrowObject.transform.localScale = new Vector3(1f, lengthScaling*currentAcc.magnitude, 1f);
-        }
+        // else
+        // {
+        //     accArrowObject.SetActive(true);
+        //     accArrowObject.transform.localScale = new Vector3(1f, lengthScaling*currentAcc.magnitude, 1f);
+        // }
 
         // change arrow text
 
@@ -240,7 +250,8 @@ public class ObjectCenter : MonoBehaviour
         Vector3 acc = new Vector3(0, 0, 0);
         float accChangeRate = 0.1f;
 
-        vel = (.5f * (pastPos[0] - pastPos[1]) / pastTime[0] + .25f * (pastPos[1] - pastPos[2]) / pastTime[1] + .25f * (pastPos[2] - pastPos[3]) / pastTime[2]);
+        //vel = (.5f * (pastPos[0] - pastPos[1]) / pastTime[0] + .25f * (pastPos[1] - pastPos[2]) / pastTime[1] + .25f * (pastPos[2] - pastPos[3]) / pastTime[2]);
+        vel = rb.velocity;
         acc = (.5f * ((pastPos[0] - pastPos[1]) / pastTime[0] - (pastPos[1] - pastPos[2]) / pastTime[1]) / pastTime[0]
             + .25f * ((pastPos[1] - pastPos[2]) / pastTime[1] - (pastPos[2] - pastPos[3]) / pastTime[2]) / pastTime[1]
             + .125f * ((pastPos[2] - pastPos[3]) / pastTime[2] - (pastPos[3] - pastPos[4]) / pastTime[3]) / pastTime[2]);

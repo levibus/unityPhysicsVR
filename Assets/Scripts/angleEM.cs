@@ -20,4 +20,13 @@ public class angleEM : MonoBehaviour
             onAngleDecrease();
         }
     }
+
+    void Update() {
+        if (Input.GetKeyUp("up")) {
+            onAngleIncrease();
+        }
+        if (Input.GetKeyUp("down")) {
+            onAngleDecrease();
+        }
+    }
 }
