@@ -7,48 +7,48 @@ public class BallScript : MonoBehaviour
 {
 
     EventManager eventManager;
-    angleEM arrowEventManager;
+    angleEM angleEventManager;
+    speedEM speedEventManager;
+    heightEM heightEventManager;
+    startingPosition startPos;
 
-    private float force = 500.0f;
-    public Vector3 startingPoint = new Vector3(0.0f, 1.5f, 0.0f);
-
-    // public event EventHandler<OnBallStartEventArgs> OnBallStart;
-    // public class OnBallStartEventArgs : EventArgs {
-    //     public Vector3 velocityVector;
-    //     public Vector3 positionVector;
-    // }
+    public int test = 0;
+    public float height = 0.2f;
 
     public Rigidbody rb;
     public Vector3 velocityVector;
     public Vector3 positionVector;
     public float launchAngle = 45.0f;
-    // public Button resetButton;
+    public float launchSpeed = 500.0f;
 
     void Start()
     {
-        // private InputDeviceCharacterics n_characteristics;
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
        
+        startPos = new startingPosition(height);
+
         eventManager = FindObjectOfType<EventManager>();
         eventManager.onBallLaunch += LaunchBall;
         eventManager.onBallReset += reset;
 
-        arrowEventManager = FindObjectOfType<angleEM>();
-        arrowEventManager.onAngleIncrease += increaseAngle;
-        arrowEventManager.onAngleDecrease += decreaseAngle;
+        angleEventManager = FindObjectOfType<angleEM>();
+        angleEventManager.onAngleIncrease += increaseAngle;
+        angleEventManager.onAngleDecrease += decreaseAngle;
+
+        speedEventManager = FindObjectOfType<speedEM>();
+        speedEventManager.onSpeedIncrease += increaseSpeed;
+        speedEventManager.onSpeedDecrease += decreaseSpeed;
+
+        heightEventManager = FindObjectOfType<heightEM>();
+        heightEventManager.onHeightIncrease += increaseHeight;
+        heightEventManager.onHeightDecrease += decreaseHeight;
     }
 
     void Update()
     {
-
-        // velocityVector = rb.velocity;
-        // positionVector = rb.position; 
-        // // eulerAngles = rb.rotation.eulerAngles;
-
-        // OnBallStart?.Invoke(this, new OnBallStartEventArgs {velocityVector = velocityVector, positionVector = positionVector});
-        
-
+        startPos.setPosition(height);
+        ballStartPosition();
     }
 
     void increaseAngle() {
@@ -63,21 +63,49 @@ public class BallScript : MonoBehaviour
         }
     } 
 
-    public void LaunchBall() {
-        // transform.eulerAngles = new Vector3(launchAngle, 0.0f, 0.0f);
-        // rb.useGravity = true;
-        // rb.AddForce(force * transform.up);
+    void increaseSpeed() {
+        if (launchSpeed < 1000.0f) {
+            launchSpeed += 100.0f;
+        }
+    }
 
+    void decreaseSpeed() {
+        if (launchSpeed > 0.0f) {
+            launchSpeed -= 100.0f;
+        }
+    } 
+
+    void increaseHeight() {
+        if (height < 5.2f) {
+            height++;
+        }
+    }
+
+    void decreaseHeight() {
+        if (height > 0.2f) {
+            height--;
+        }
+    } 
+
+    public void LaunchBall() {
+        test = 1;
         rb.useGravity = true;
         float normalizedAngle = launchAngle / 90.0f;
         Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
-        rb.AddForce(force * angle);
+        rb.AddForce(launchSpeed * angle);
     }
 
     public void reset() {
+        test = 0;
         rb.useGravity = false;
-        transform.position = startingPoint;
+        rb.position = startPos.getPosition();
         rb.velocity = Vector3.zero;
+    }
+
+    public void ballStartPosition() {
+        if (test == 0) {
+            transform.position = startPos.getPosition();
+        }
     }
 
 }

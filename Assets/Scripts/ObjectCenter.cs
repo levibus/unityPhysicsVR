@@ -7,12 +7,17 @@ public class ObjectCenter : MonoBehaviour
 {
     // Class variables
 
-    angleEM arrowEventManager;
+    angleEM angleEventManager;
+    speedEM speedEventManager;
+    heightEM heightEventManager;
+    startingPosition startPos;
 
-    public Vector3 startingPosition = new Vector3(0.0f, 1.5f, 0.0f);
+    public float height = 0.2f;
 
     public Rigidbody rb; 
-    float normalizedAngle = 0.0f;
+    float normalizedVelAngle = 0.0f;
+    float normalizedAccAngle = 0.0f;
+    public float normalizedSpeed = 2.0f;
 
     public GameObject velArrowObject; // the empty game object made so that the arrow rotates correctly
     public GameObject accArrowObject; // ditto
@@ -20,7 +25,7 @@ public class ObjectCenter : MonoBehaviour
     // public GameObject accArrow; // ditto
     private GameObject arCamera; // this finds the world arCamera to calculate the velocity from it
     public float launchAngle = 45.0f; // this is the starting launch angle of the ball (45 degrees)
-    public float launchSpeed = 3.0f; // I may modify this to be a user-input value if I have the time TODO
+    public float launchSpeed1 = 500.0f; // I may modify this to be a user-input value if I have the time TODO
 
     public Vector3[] pastPos; // array of the previous positions to allow for smoothing of velocity/acceleration
     public float[] pastTime; // same as above but for time
@@ -34,7 +39,7 @@ public class ObjectCenter : MonoBehaviour
     // private ArrowContainer AArrowContainer; // ditto
 
     public int reportedPrecision = 2; // number of decimal places
-    public float lengthScaling = 1f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
+    public float lengthScaling = 0.01f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
 
 
     // --FOR TESTING--
@@ -53,9 +58,19 @@ public class ObjectCenter : MonoBehaviour
             arCamera = GameObject.Find("CenterEyeAnchor");
         }
 
-        arrowEventManager = FindObjectOfType<angleEM>();
-        arrowEventManager.onAngleIncrease += increaseAngle;
-        arrowEventManager.onAngleDecrease += decreaseAngle;
+        startPos = new startingPosition(height);
+
+        angleEventManager = FindObjectOfType<angleEM>();
+        angleEventManager.onAngleIncrease += increaseAngle;
+        angleEventManager.onAngleDecrease += decreaseAngle;
+
+        speedEventManager = FindObjectOfType<speedEM>();
+        speedEventManager.onSpeedIncrease += increaseSpeed;
+        speedEventManager.onSpeedDecrease += decreaseSpeed;
+
+        heightEventManager = FindObjectOfType<heightEM>();
+        heightEventManager.onHeightIncrease += increaseHeight;
+        heightEventManager.onHeightDecrease += decreaseHeight;
 
         rb = GetComponent<Rigidbody>();
 
@@ -87,6 +102,7 @@ public class ObjectCenter : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        startPos.setPosition(height);
         // intrinsic motion for testing
         float delTime = Time.deltaTime;
         testVel += testAcc * delTime;
@@ -145,6 +161,30 @@ public class ObjectCenter : MonoBehaviour
         }
     }
 
+    void increaseSpeed() {
+        if (launchSpeed1 < 1000.0f) {
+            launchSpeed1 += 100.0f;
+        }
+    }
+
+    void decreaseSpeed() {
+        if (launchSpeed1 > 0.0f) {
+            launchSpeed1 -= 100.0f;
+        }
+    } 
+
+    void increaseHeight() {
+        if (height < 5.2f) {
+            height++;
+        }
+    }
+
+    void decreaseHeight() {
+        if (height > 0.2f) {
+            height--;
+        }
+    } 
+
     void MoveArrows()
     {
 
@@ -158,38 +198,45 @@ public class ObjectCenter : MonoBehaviour
         // float normalizedAngle = launchAngle / 90.0f;
         // Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
         if (rb.velocity.y + rb.velocity.z != 0) {
-            normalizedAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);
+            normalizedVelAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);     // makes the angle into a ratio of 0 - 1 to 0 - 90
         }
 
-        velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAngle), normalizedAngle, 0.0f);
+        velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedVelAngle), normalizedVelAngle, 0.0f);             // points the velocity arrow in correct direction
+
+        if (currentAcc.y + currentAcc.z != 0) {
+            normalizedAccAngle = 90.0f * currentAcc.y / (Mathf.Abs(currentAcc.y) + Mathf.Abs(currentAcc.z));     // makes the angle into a ratio of 0 - 1 to 0 - 90
+        }
+
+        accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), normalizedAccAngle, 0.0f);
 
         // if acceleration or velocity magnitude is too small, don't display corresponding arrow
 
         float minSize = Mathf.Pow(10, -reportedPrecision + 1);
 
-        if (transform.position == startingPosition) {
+        if (transform.position == startPos.getPosition()) {
             velArrowObject.SetActive(true);
-            velArrowObject.transform.localScale = new Vector3(1.0f, launchSpeed, 1.0f);            // might need to be VArrowContainer
+            normalizedSpeed = launchSpeed1 / 250.0f;
+            velArrowObject.transform.localScale = new Vector3(1.0f, normalizedSpeed, 1.0f);          // using a scaling factor of 4
             velArrowObject.transform.eulerAngles = new Vector3(launchAngle, 0.0f, 0.0f);
         }
-        if (currentVel.magnitude <= minSize && transform.position != startingPosition)
+        if (currentVel.magnitude <= minSize && transform.position != startPos.getPosition())
         {
             velArrowObject.SetActive(false);
         }
-        else if (transform.position != startingPosition) {
+        else if (transform.position != startPos.getPosition()) {
             velArrowObject.SetActive(true);
             velArrowObject.transform.localScale = new Vector3(1f, lengthScaling * rb.velocity.magnitude, 1f);
         }
 
-        if (currentAcc.magnitude <= minSize)
+        if (currentAcc.magnitude <= minSize || transform.position == startPos.getPosition())
         {
             accArrowObject.SetActive(false);
         }
-        // else
-        // {
-        //     accArrowObject.SetActive(true);
-        //     accArrowObject.transform.localScale = new Vector3(1f, lengthScaling*currentAcc.magnitude, 1f);
-        // }
+        else
+        {
+            accArrowObject.SetActive(true);
+            accArrowObject.transform.localScale = new Vector3(1f, lengthScaling * currentAcc.magnitude, 1f);
+        }
 
         // change arrow text
 
