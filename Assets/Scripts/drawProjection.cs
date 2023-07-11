@@ -66,6 +66,7 @@ public class drawProjection : MonoBehaviour
 
     void Update()
     {
+        startPos.setPosition(height1);
         lineRenderer.positionCount = numPoints;
         List<Vector3> points = new List<Vector3>();
         Vector3 startingPosition = startPos.getPosition();
@@ -110,13 +111,13 @@ public class drawProjection : MonoBehaviour
 
     void increaseHeight1() {
         if (height1 < 5.2f) {
-            height1++;
+            height1 += 1.0f;
         }
     }
 
     void decreaseHeight1() {
-        if (height1 > 1.2f) {
-            height1--;
+        if (height1 > 0.2f) {
+            height1 -= 1.0f;
         }
     } 
 }
