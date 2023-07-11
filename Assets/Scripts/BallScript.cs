@@ -82,7 +82,7 @@ public class BallScript : MonoBehaviour
     }
 
     void decreaseHeight() {
-        if (height > 0.2f) {
+        if (height > 1.2f) {
             height--;
         }
     } 
