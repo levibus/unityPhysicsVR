@@ -10,14 +10,14 @@ public class ObjectCenter : MonoBehaviour
     angleEM angleEventManager;
     speedEM speedEventManager;
     heightEM heightEventManager;
-    startingPosition startPos;
-
-    public float height = 0.2f;
+    startingPosition startPos;  // a class that can get and set the starting position... used for changing the height of the launch
 
     public Rigidbody rb; 
     float normalizedVelAngle = 0.0f;
     float normalizedAccAngle = 0.0f;
     public float normalizedSpeed = 2.0f;
+        public float height = 0.2f;
+
 
     public GameObject velArrowObject; // the empty game object made so that the arrow rotates correctly
     public GameObject accArrowObject; // ditto
@@ -201,17 +201,18 @@ public class ObjectCenter : MonoBehaviour
             normalizedVelAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);     // makes the angle into a ratio of 0 - 1 to 0 - 90
         }
 
-        velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedVelAngle), normalizedVelAngle, 0.0f);             // points the velocity arrow in correct direction
+        velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedVelAngle), 0.0f, 0.0f);             // points the velocity arrow in correct direction
+        // Debug.Log("vel: " + velArrowObject.transform.eulerAngles);
 
         if (currentAcc.y + currentAcc.z != 0) {
             normalizedAccAngle = 90.0f * currentAcc.y / (Mathf.Abs(currentAcc.y) + Mathf.Abs(currentAcc.z));     // makes the angle into a ratio of 0 - 1 to 0 - 90
         }
 
-        accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), normalizedAccAngle, 0.0f);
-
+        accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), 0.0f, 0.0f);
+        // Debug.Log("acc: " + accArrowObject.transform.eulerAngles);
         // if acceleration or velocity magnitude is too small, don't display corresponding arrow
 
-        float minSize = Mathf.Pow(10, -reportedPrecision + 1);
+        float minSize = Mathf.Pow(10, -reportedPrecision + 1) + 0.5f;
 
         if (transform.position == startPos.getPosition()) {
             velArrowObject.SetActive(true);

@@ -119,5 +119,8 @@ public class drawProjection : MonoBehaviour
         if (height1 > 0.2f) {
             height1 -= 1.0f;
         }
+        if (height1 < 0) {
+            height1 = 0.2f;
+        }
     } 
 }
