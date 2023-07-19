@@ -1,32 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// using System.Collections;
+// using System.Collections.Generic;
+// using UnityEngine;
 
-public class xGravityVector : MonoBehaviour
-{
-    public LayerMask mask;
-    public Transform objectToPlace;
-    public GameObject cubeHolder;
-    public GameObject arrowHolder;
-    public Camera gameCamera;
-    float scaleDown = 0.1f;
+// public class xGravityVector : MonoBehaviour
+// {
+//     public LayerMask mask;
+//     public Transform objectToPlace;
+//     public GameObject cubeHolder;
+//     public GameObject arrowHolder;
+//     public Camera gameCamera;
+//     float scaleDown = 0.1f;
 
-    void Update() {
-        Vector3 screenPos = gameCamera.WorldToScreenPoint(cubeHolder.transform.position);
-        Ray ray = gameCamera.ScreenPointToRay(screenPos);
-        RaycastHit hitInfo;
+//     void Update() {
+//         Vector3 screenPos = gameCamera.WorldToScreenPoint(cubeHolder.transform.position);
+//         Ray ray = gameCamera.ScreenPointToRay(screenPos);
+//         RaycastHit hitInfo;
     
-        if (Physics.Raycast(ray, out hitInfo)) {
-            objectToPlace.position = hitInfo.point;
-            objectToPlace.rotation = Quaternion.FromToRotation(Vector3.up, (-1.0f * hitInfo.normal));  // I have to do something with the angle
-        }
+//         if (Physics.Raycast(ray, out hitInfo)) {
+//             objectToPlace.position = hitInfo.point;
+//             objectToPlace.rotation = Quaternion.FromToRotation(Vector3.up, (-1.0f * hitInfo.normal));  // I have to do something with the angle
+//         }
 
-        scaleArrow();
-    }
+//         scaleArrow();
+//     }
 
-    void scaleArrow() {
-        float angle = objectToPlace.eulerAngles.y * Mathf.PI / 180f;
-        float scale = 9.81f * Mathf.Cos(angle) * scaleDown;
-        arrowHolder.transform.localScale = new Vector3(0.25f, scale, 0.25f);
-    }
-}
+//     void scaleArrow() {
+//         float angle = objectToPlace.eulerAngles.y * Mathf.PI / 180f;
+//         float scale = 9.81f * Mathf.Cos(angle) * scaleDown;
+//         arrowHolder.transform.localScale = new Vector3(0.25f, scale, 0.25f);
+//     }
+// }

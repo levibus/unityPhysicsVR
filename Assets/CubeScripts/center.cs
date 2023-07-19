@@ -10,6 +10,7 @@ public class center : MonoBehaviour
     Rigidbody rb;
     public GameObject anchor;
     public GameObject cube;
+    public GameObject pivot;
     float normalizedVelAngle = 0.0f;
     float normalizedAccAngle = 0.0f;
 
@@ -30,7 +31,7 @@ public class center : MonoBehaviour
     // private ArrowContainer VArrowContainer; // this is just the object assigned to the arrow for easier management of the pieces
     // private ArrowContainer AArrowContainer; // ditto
 
-    public int reportedPrecision = 10; // number of decimal places
+    public int reportedPrecision = 1; // number of decimal places
     public float lengthScaling = 1000.0f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
 
 
@@ -156,7 +157,7 @@ public class center : MonoBehaviour
 
         float minSize = Mathf.Pow(10, -reportedPrecision + 1);
 
-        if (currentVel.magnitude <= minSize || cube.transform.position == anchor.transform.position)
+        if (currentVel.magnitude <= minSize || cube.transform.position == anchor.transform.position || pivot.transform.eulerAngles.x < 11.0f)
         {
             velArrowObject.SetActive(false);
         }
