@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class velocityButton : MonoBehaviour
+public class normalArrowButton : MonoBehaviour
 {
     public Oculus.Interaction.RoundedBoxProperties RBP;
     public Color materialColor1;
@@ -14,7 +14,7 @@ public class velocityButton : MonoBehaviour
     {
         // RBP.Color = materialColor2;
         arrowEM = FindObjectOfType<arrowUI>();
-        arrowEM.onVelocity += changeColor;
+        arrowEM.onNormal += changeColor;
     }
 
     void changeColor() {
