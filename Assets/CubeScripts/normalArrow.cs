@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class normalArrow : MonoBehaviour
 {
+
     public LayerMask mask;
     public GameObject normalArrowObject;
     public GameObject cubeHolder;
@@ -18,6 +19,7 @@ public class normalArrow : MonoBehaviour
     Vector3 nintyDegrees = new Vector3(90.0f, 0.0f, 0.0f);
     Vector3 reverseDirection = new Vector3(180.0f, 0.0f, 0.0f);
     float scaleDown = 0.1f;
+    float xGravityXCoordinate;
 
     void Update() {
         Vector3 direction = cubeHolder.transform.position - origin.transform.position;
@@ -29,7 +31,8 @@ public class normalArrow : MonoBehaviour
             yArrowHolder.transform.position = cubeHolder.transform.position;
             yArrowHolder.transform.rotation = Quaternion.FromToRotation(Vector3.up, (-1.0f * hitInfo.normal));
             xArrowHolder.transform.position = cubeHolder.transform.position;
-            xArrowHolder.transform.eulerAngles = yArrowHolder.transform.eulerAngles + nintyDegrees;
+            xGravityXCoordinate = yArrowHolder.transform.eulerAngles.x + 90.0f;
+            xArrowHolder.transform.eulerAngles = new Vector3(xGravityXCoordinate, 180.0f, 180.0f);
             frictionArrow.transform.position = cubeHolder.transform.position;
             frictionArrow.transform.eulerAngles = xArrowHolder.transform.eulerAngles + reverseDirection;
         }

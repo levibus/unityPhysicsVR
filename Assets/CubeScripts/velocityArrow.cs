@@ -6,21 +6,40 @@ public class velocityArrow : MonoBehaviour
 {
     public GameObject arrow;
     arrowUI arrowEM;
-    bool test = false;
+    cubeCollision collision;
+    launchEM resetEM;
+    bool test = true;
 
     void Start()
     {
         arrowEM = FindObjectOfType<arrowUI>();
         arrowEM.onVelocity += changeActive;
+
+        collision = FindObjectOfType<cubeCollision>();
+        collision.onGroundCollision += turnOff;
+
+        resetEM = FindObjectOfType<launchEM>();
+        resetEM.onReset += turnOn;
     }
 
     void changeActive() {
         if (!test) {
+            arrow.SetActive(true);
             test = true;
-            arrow.SetActive(false);
         }
         else {
+            arrow.SetActive(false);
             test = false;
+
+        }
+    }
+
+    void turnOff() {
+        arrow.SetActive(false);
+    }
+
+    void turnOn() {
+        if (test) {
             arrow.SetActive(true);
         }
     }
