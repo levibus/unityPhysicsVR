@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class mapGenerator : MonoBehaviour
 {
+    public enum DrawMode {noiseMap, colorMap};
+    public DrawMode drawMode;
+
     public int mapWidth;
     public int mapHeight;
     public float noiseScale;
@@ -22,14 +25,26 @@ public class mapGenerator : MonoBehaviour
     public void GenerateMap() {
         float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
+        Color[] colorMap = new Color[mapWidth * mapHeight];
         for (int y = 0; y < mapHeight; y++) {
             for (int x = 0; x < mapWidth; x++) {
-                
+                float currentHeight = noiseMap[x,y];
+                for (int i = 0; i < regions.Length; i++) {
+                    if (currentHeight <= regions[i].height) {
+                        colorMap[y * mapWidth + x] = regions[i].color;
+                        break;
+                    }
+                }
             }
         }
 
         mapDisplay display = FindObjectOfType<mapDisplay>();
-        display.DrawNoiseMap(noiseMap);
+        if (drawMode == DrawMode.noiseMap) {
+            display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
+        } else if (drawMode == DrawMode.colorMap) {
+            display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+        }
+        
 
     }
 
@@ -52,6 +67,6 @@ public class mapGenerator : MonoBehaviour
 [System.Serializable]
 public struct TerrainType {
     public string name;
-    public string height;
+    public float height;
     public Color color;
 }
