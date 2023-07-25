@@ -56,7 +56,6 @@ public class normalArrow : MonoBehaviour
     void scaleArrows(float angleDeg) {
         float angleRad = angleDeg * Mathf.PI / 180f;
         float scale = 9.81f * Mathf.Cos(angleRad);
-        // Debug.Log("Y scale: " + xArrowHolder.transform.eulerAngles);
         float smallerScaleY = scale * scaleDown;
         yArrowHolder.transform.localScale = new Vector3(0.25f, smallerScaleY, 0.25f);
         normalArrowObject.transform.localScale = new Vector3(0.25f, smallerScaleY, 0.25f);
@@ -68,7 +67,6 @@ public class normalArrow : MonoBehaviour
 
         float smallerScaleX = Mathf.Sqrt(insideMath) * scaleDown;
         xArrowHolder.transform.localScale = new Vector3(0.25f, smallerScaleX, 0.25f);
-        Debug.Log("smallerScaleX: " + smallerScaleX);
         frictionArrow.transform.localScale = new Vector3(0.25f, smallerScaleY * frictionConstant + 0.1f, 0.25f);
     }
 }
