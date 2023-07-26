@@ -12,9 +12,8 @@ public class yGravityArrow : MonoBehaviour
     public GameObject yGravSnap;
     public GameObject arrow;
 
-    float spacing1 = 0.5f;
+    float spacing1 = 0.15f;
     bool active = true;
-    bool test = true;
 
     void Start()
     {
@@ -34,8 +33,16 @@ public class yGravityArrow : MonoBehaviour
     }
 
     void arrowOn() {
-        arrow.SetActive(true);
-        active = true;
+        if (!active) {
+            arrow.SetActive(true);
+            active = true;
+            ArrowDestruction();
+        }
+        else {
+            arrow.SetActive(false);
+            active = false;
+            ArrowDestruction();
+        }
     }
 
     void ArrowDestruction() {

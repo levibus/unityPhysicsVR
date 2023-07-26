@@ -14,7 +14,7 @@ public class frictionArrow : MonoBehaviour
     public GameObject frictionSnap;
     public GameObject arrow;
 
-    float spacing1 = 0.5f;
+    float spacing1 = 0.15f;
     bool active = true;
 
     void Start()
@@ -41,7 +41,6 @@ public class frictionArrow : MonoBehaviour
         }
     }
 
-
     void Update() {
         if (active && transform.position.x < frictionSnap.transform.position.x + spacing1 && transform.position.y < frictionSnap.transform.position.y + spacing1 && transform.position.z < frictionSnap.transform.position.z + spacing1 && 
             transform.position.x > frictionSnap.transform.position.x - spacing1 && transform.position.y > frictionSnap.transform.position.y - spacing1 && transform.position.z > frictionSnap.transform.position.z - spacing1) {
@@ -51,9 +50,17 @@ public class frictionArrow : MonoBehaviour
         }
     }
 
-    void arrowOn() {
-        arrow.SetActive(true);
-        active = true;
+   void arrowOn() {
+        if (!active) {
+            arrow.SetActive(true);
+            active = true;
+            ArrowDestruction();
+        }
+        else {
+            arrow.SetActive(false);
+            active = false;
+            ArrowDestruction();
+        }
     }
 
     void ArrowDestruction() {

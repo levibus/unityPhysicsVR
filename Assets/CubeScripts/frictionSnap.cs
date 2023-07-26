@@ -7,9 +7,10 @@ public class frictionSnap : MonoBehaviour
     public GameObject Snap;
     public Material solid;
     public Material opague;
-
+    bool solidTest = true;
+    
     Renderer renderer;
-    frictionArrow frictionArr;
+    frictionArrow arrow;
     arrowUI arrowEM;
     
     void Start()
@@ -17,19 +18,18 @@ public class frictionSnap : MonoBehaviour
         renderer = Snap.GetComponent<Renderer>();
         renderer.material = solid;
 
-        frictionArr = FindObjectOfType<frictionArrow>();
-        frictionArr.onArrowDestruction += makeOpague;
-
-        arrowEM = FindObjectOfType<arrowUI>();
-        arrowEM.onFriction += makeSolid;
+        arrow = FindObjectOfType<frictionArrow>();
+        arrow.onArrowDestruction += toggle;
     }
 
-    void makeOpague() {
-        renderer.material = opague;
-    }
-
-    void makeSolid() {
-        renderer.material = solid;
+    void toggle() {
+        if (!solidTest) {
+            renderer.material = solid;
+            solidTest = true;
+        } else {
+            renderer.material = opague;
+            solidTest = false;
+        }
     }
 
 }

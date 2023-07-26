@@ -7,9 +7,10 @@ public class xGravSnap : MonoBehaviour
     public GameObject Snap;
     public Material solid;
     public Material opague;
+    bool solidTest = true;
+    
     Renderer renderer;
     xGravityArrow xGrav;
-
     arrowUI arrowEM;
     
     void Start()
@@ -18,18 +19,17 @@ public class xGravSnap : MonoBehaviour
         renderer.material = solid;
 
         xGrav = FindObjectOfType<xGravityArrow>();
-        xGrav.onArrowDestruction += makeOpague;
-
-        arrowEM = FindObjectOfType<arrowUI>();
-        arrowEM.onXGravity += makeSolid;
+        xGrav.onArrowDestruction += toggle;
     }
 
-    void makeOpague() {
-        renderer.material = opague;
-    }
-
-    void makeSolid() {
-        renderer.material = solid;
+    void toggle() {
+        if (!solidTest) {
+            renderer.material = solid;
+            solidTest = true;
+        } else {
+            renderer.material = opague;
+            solidTest = false;
+        }
     }
 
 }

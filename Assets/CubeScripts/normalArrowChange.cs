@@ -7,19 +7,16 @@ public class normalArrowChange : MonoBehaviour
 {
     public event Action onArrowDestruction;
 
+    arrowUI arrowEM;
+
     public GameObject arrow;
     public GameObject normalSnap;
-    float spacing1 = 0.5f;
+
+    float spacing1 = 0.15f;
     bool active = true;
 
-    // normalModel1 model;
-    arrowUI arrowEM;
-    
     void Start()
     {
-        // model = FindObjectOfType<normalModel1>();
-        // model.onArrowPlacement += arrowOn;
-
         arrowEM = FindObjectOfType<arrowUI>();
         arrowEM.onNormal += arrowOn;
 
@@ -36,8 +33,16 @@ public class normalArrowChange : MonoBehaviour
     }
 
     void arrowOn() {
-        arrow.SetActive(true);
-        active = true;
+        if (!active) {
+            arrow.SetActive(true);
+            active = true;
+            ArrowDestruction();
+        }
+        else {
+            arrow.SetActive(false);
+            active = false;
+            ArrowDestruction();
+        }
     }
 
     void ArrowDestruction() {

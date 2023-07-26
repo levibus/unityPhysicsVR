@@ -11,12 +11,11 @@ public class velocityArrow : MonoBehaviour
     cubeCollision collision;
     launchEM resetEM;
 
-    public GameObject velSnap;
     public GameObject arrow;
+    public GameObject anchor;
+    public Rigidbody rb;
 
-    float spacing1 = 0.5f;
     bool active = true;
-    bool test = true;
 
     void Start()
     {
@@ -37,24 +36,22 @@ public class velocityArrow : MonoBehaviour
     }
 
     void turnOn() {
-        if (test) {
+        if (active) {
             arrow.SetActive(true);
         }
     }
 
-
-    void Update() {
-        if (active && transform.position.x < velSnap.transform.position.x + spacing1 && transform.position.y < velSnap.transform.position.y + spacing1 && transform.position.z < velSnap.transform.position.z + spacing1 && 
-            transform.position.x > velSnap.transform.position.x - spacing1 && transform.position.y > velSnap.transform.position.y - spacing1 && transform.position.z > velSnap.transform.position.z - spacing1) {
-            active = false;
-            arrow.SetActive(false);
+    void arrowOn() {
+        if (!active) {
+            arrow.SetActive(true);
+            active = true;
             ArrowDestruction();
         }
-    }
-
-    void arrowOn() {
-        arrow.SetActive(true);
-        active = true;
+        else {
+            arrow.SetActive(false);
+            active = false;
+            ArrowDestruction();
+        }
     }
 
     void ArrowDestruction() {

@@ -7,9 +7,10 @@ public class velSnap : MonoBehaviour
     public GameObject Snap;
     public Material solid;
     public Material opague;
-
+    bool solidTest = true;
+    
     Renderer renderer;
-    velocityArrow velArrow;
+    velocityArrow arrow;
     arrowUI arrowEM;
     
     void Start()
@@ -17,19 +18,18 @@ public class velSnap : MonoBehaviour
         renderer = Snap.GetComponent<Renderer>();
         renderer.material = solid;
 
-        velArrow = FindObjectOfType<velocityArrow>();
-        velArrow.onArrowDestruction += makeOpague;
-
-        arrowEM = FindObjectOfType<arrowUI>();
-        arrowEM.onVelocity += makeSolid;
+        arrow = FindObjectOfType<velocityArrow>();
+        arrow.onArrowDestruction += toggle;
     }
 
-    void makeOpague() {
-        renderer.material = opague;
-    }
-
-    void makeSolid() {
-        renderer.material = solid;
+    void toggle() {
+        if (!solidTest) {
+            renderer.material = solid;
+            solidTest = true;
+        } else {
+            renderer.material = opague;
+            solidTest = false;
+        }
     }
 
 }

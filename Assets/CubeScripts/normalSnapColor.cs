@@ -4,36 +4,32 @@ using UnityEngine;
 
 public class normalSnapColor : MonoBehaviour
 {
-    public GameObject normalSnap;
+    public GameObject Snap;
     public Material solid;
     public Material opague;
+    bool solidTest = true;
+    
     Renderer renderer;
-    normalArrowChange normalChange;
-
-    // normalModel1 model;
+    normalArrowChange arrow;
     arrowUI arrowEM;
     
     void Start()
     {
-        renderer = normalSnap.GetComponent<Renderer>();
+        renderer = Snap.GetComponent<Renderer>();
         renderer.material = solid;
 
-        normalChange = FindObjectOfType<normalArrowChange>();
-        normalChange.onArrowDestruction += makeOpague;
-
-        // model = FindObjectOfType<normalModel1>();
-        // model.onArrowPlacement += makeSolid;
-
-        arrowEM = FindObjectOfType<arrowUI>();
-        arrowEM.onNormal += makeSolid;
+        arrow = FindObjectOfType<normalArrowChange>();
+        arrow.onArrowDestruction += toggle;
     }
 
-    void makeOpague() {
-        renderer.material = opague;
-    }
-
-    void makeSolid() {
-        renderer.material = solid;
+    void toggle() {
+        if (!solidTest) {
+            renderer.material = solid;
+            solidTest = true;
+        } else {
+            renderer.material = opague;
+            solidTest = false;
+        }
     }
 
 }
