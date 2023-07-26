@@ -9,7 +9,9 @@ public class normalSnapColor : MonoBehaviour
     public Material opague;
     Renderer renderer;
     normalArrowChange normalChange;
-    normalModel model;
+
+    // normalModel1 model;
+    arrowUI arrowEM;
     
     void Start()
     {
@@ -19,8 +21,11 @@ public class normalSnapColor : MonoBehaviour
         normalChange = FindObjectOfType<normalArrowChange>();
         normalChange.onArrowDestruction += makeOpague;
 
-        model = FindObjectOfType<normalModel>();
-        model.onArrowPlacement += makeSolid;
+        // model = FindObjectOfType<normalModel1>();
+        // model.onArrowPlacement += makeSolid;
+
+        arrowEM = FindObjectOfType<arrowUI>();
+        arrowEM.onNormal += makeSolid;
     }
 
     void makeOpague() {

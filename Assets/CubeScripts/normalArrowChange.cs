@@ -12,12 +12,16 @@ public class normalArrowChange : MonoBehaviour
     float spacing1 = 0.5f;
     bool active = true;
 
-    normalModel model;
+    // normalModel1 model;
+    arrowUI arrowEM;
     
     void Start()
     {
-        model = FindObjectOfType<normalModel>();
-        model.onArrowPlacement += arrowOn;
+        // model = FindObjectOfType<normalModel1>();
+        // model.onArrowPlacement += arrowOn;
+
+        arrowEM = FindObjectOfType<arrowUI>();
+        arrowEM.onNormal += arrowOn;
 
         arrow.SetActive(true);
     }
