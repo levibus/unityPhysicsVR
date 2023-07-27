@@ -6,13 +6,18 @@ public class cube : MonoBehaviour
 {
     launchEM launch;
     frictionUI DynoFrictionEM;
+    visibleUI visibleEM;
 
     public GameObject anchor;
     public GameObject pivot;
+    public GameObject block;
+    public Rigidbody rb;
 
     Collider coll;
-    public Rigidbody rb;
+    MeshRenderer MR;
+
     int test = 1;
+    bool active = false;
     float dynamicFriction = 0.3f;   // good starting value
     float staticFriction = 0.3f;  
 
@@ -21,6 +26,7 @@ public class cube : MonoBehaviour
         rb.useGravity = false;
 
         coll = GetComponent<Collider>();
+        MR = GetComponent<MeshRenderer>();
 
         launch = FindObjectOfType<launchEM>();
         launch.onLaunch += Launch;
@@ -31,6 +37,9 @@ public class cube : MonoBehaviour
         DynoFrictionEM.onDynoFrictionDecrease += decreaseDynoFriction;
         DynoFrictionEM.onStaticFrictionIncrease += increaseStaticFriction;
         DynoFrictionEM.onStaticFrictionDecrease += decreaseStaticFriction;
+
+        visibleEM = FindObjectOfType<visibleUI>();
+        visibleEM.onBlock += toggleVisibility;
     }
 
     void Update() {
@@ -74,6 +83,17 @@ public class cube : MonoBehaviour
     void decreaseStaticFriction() {
         if (staticFriction > 0.01) {
             staticFriction -= 0.1f;
+        }
+    }
+
+    void toggleVisibility() {
+        if (active) {
+            MR.enabled = false;
+            active = false;
+        }
+        else {
+            MR.enabled = true;
+            active = true;
         }
     }
 
