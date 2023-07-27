@@ -10,18 +10,16 @@ public class angleText2 : MonoBehaviour
     angleEM angleEventManager;
 
     public GameObject pivot;
+    int textNum;
  
     private void Start()
     {
-        // Get a reference to the text component.
-        // Since we are using the base class type <TMP_Text> this component could be either a <TextMeshPro> or <TextMeshProUGUI> component.
-        label.text = "shaye gay";
-        transform.position = new Vector3(0.0f, 1.0f, -0.5f);
+        label.text = 45 + "\u00B0";
     }
 
     private void Update() {
-        label.text = "shaye gay";
-        transform.position = new Vector3(0.0f, 1.0f, -0.5f);
+        textNum = (int) (pivot.transform.eulerAngles.x + 0.5f);
+        label.text = textNum + "\u00B0";        
     }
 
 }
