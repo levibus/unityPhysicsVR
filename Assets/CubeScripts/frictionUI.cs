@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the UI buttons are pressed to increase/decrease the dynamic or static coefficient of friction on the cube.
+*/
+
 public class frictionUI : MonoBehaviour
 {
     public event Action onDynoFrictionIncrease;
@@ -35,7 +40,7 @@ public class frictionUI : MonoBehaviour
         }
     }
 
-    void Update() {
+    void Update() {                       // can also use keybindings while in the Unity play mode
         if (Input.GetKeyUp("p")) {
             onDynoFrictionIncrease();
         }

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the buttons are pushed to increase/decrease the angle of the board.
+*/
+
 public class boardAngleEM : MonoBehaviour
 {
-
     public event Action onAngleIncrease;
     public event Action onAngleDecrease;
 
