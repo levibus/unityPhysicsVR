@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the UI buttons and pushed to turn the block and board visibility on/off.
+*/
+
 public class visibleUI : MonoBehaviour
 {
     public event Action onBlock;
@@ -20,7 +25,7 @@ public class visibleUI : MonoBehaviour
         }
     }
 
-    void Update() {
+    void Update() {                    // can also use keybindings while in the Unity play mode
         if (Input.GetKeyUp("b")) {
             onBlock();
         }

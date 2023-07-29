@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/*
+* Authors: Evan Bourke and Levi Busching
+* Description: Changes the direction and scale of the velocity and acceleration arrows on the cube.
+*              Currently, the acceleration arrow is commented out, as it is not useful for the demonstration.
+*/
+
 public class center : MonoBehaviour
 {
     // Class variables
 
-    Rigidbody rb;
-    public GameObject anchor;
+    Rigidbody rb;                     // Rigidbody of the cube
+    public GameObject anchor;         // The empty GameObject on the board which signals where the cube starts 
     public GameObject cube;
     public GameObject pivot;
     float normalizedVelAngle = 0.0f;
@@ -16,8 +22,6 @@ public class center : MonoBehaviour
 
     public GameObject velArrowObject; // the empty game object made so that the arrow rotates correctly
     public GameObject accArrowObject; // ditto
-    // public GameObject velArrow; // starts as a prefab, then is instantiated and reassigned to the actual created object
-    // public GameObject accArrow; // ditto
     private GameObject arCamera; // this finds the world arCamera to calculate the velocity from it
 
     public Vector3[] pastPos; // array of the previous positions to allow for smoothing of velocity/acceleration
@@ -27,9 +31,6 @@ public class center : MonoBehaviour
     public Vector3 currentPos; // the position of the center object relative to the arCamera of this current frame
     public Vector3 currentVel; // the velocity " "
     public Vector3 currentAcc; // the acceleration " "
-
-    // private ArrowContainer VArrowContainer; // this is just the object assigned to the arrow for easier management of the pieces
-    // private ArrowContainer AArrowContainer; // ditto
 
     public int reportedPrecision = 1; // number of decimal places
     public float lengthScaling = 1000.0f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
@@ -53,14 +54,6 @@ public class center : MonoBehaviour
 
         accArrowObject.SetActive(false);
         rb = GetComponent<Rigidbody>();
-
-        // instatiate the arrows from the assigned prefabs and replace the prefabs with these actual objects
-        // velArrow = Instantiate(velArrow, transform.position, transform.rotation);
-        // accArrow = Instantiate(accArrow, transform.position, transform.rotation);
-
-        // // find the arrows' containers
-        // VArrowContainer = velArrow.GetComponent<ArrowContainer>();
-        // AArrowContainer = accArrow.GetComponent<ArrowContainer>();
 
         // setup for position and time
         pastPos = new Vector3[positionSize];
@@ -131,30 +124,25 @@ public class center : MonoBehaviour
     void MoveArrows()
     {
 
-        // move arrows to object center
+        // move arrow to object center
 
         velArrowObject.transform.position = transform.position;
         // accArrowObject.transform.position = transform.position;
 
         //rotate arrows
-
-        // float normalizedAngle = launchAngle / 90.0f;
-        // Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
         if (rb.velocity.y + rb.velocity.z != 0) {
             normalizedVelAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);     // makes the angle into a ratio of 0 - 1 to 0 - 90
         }
 
         velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedVelAngle), 0.0f, 0.0f);             // points the velocity arrow in correct direction
-        // Debug.Log("vel: " + velArrowObject.transform.eulerAngles);
 
         if (currentAcc.y + currentAcc.z != 0) {
             normalizedAccAngle = 90.0f * currentAcc.y / (Mathf.Abs(currentAcc.y) + Mathf.Abs(currentAcc.z));     // makes the angle into a ratio of 0 - 1 to 0 - 90
         }
 
         accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), 0.0f, 0.0f);
-        // Debug.Log("acc: " + accArrowObject.transform.eulerAngles);
+        
         // if acceleration or velocity magnitude is too small, don't display corresponding arrow
-
         float minSize = Mathf.Pow(10, -reportedPrecision + 1);
 
         if (currentVel.magnitude <= minSize || cube.transform.position == anchor.transform.position || pivot.transform.eulerAngles.x < 11.0f)
@@ -163,44 +151,9 @@ public class center : MonoBehaviour
         }
         else {
             velArrowObject.SetActive(true);
-            velArrowObject.transform.localScale = new Vector3(0.25f, /* lengthScaling * rb.velocity.magnitude */ 1.0f, 0.25f);
+            velArrowObject.transform.localScale = new Vector3(0.25f, lengthScaling * rb.velocity.magnitude, 0.25f);
         }
 
-        // if (currentAcc.magnitude <= minSize || rb.position == anchor.transform.position)
-        // {
-        //     accArrowObject.SetActive(false);
-        // }
-        // else
-        // {
-        //     accArrowObject.SetActive(true);
-        //     accArrowObject.transform.localScale = new Vector3(0.25f, /*lengthScaling * currentAcc.magnitude*/ 1.0f, 0.25f);
-        // }
-
-        // change arrow text
-
-        // string form = "0.";
-        // for (int i = 0; i<reportedPrecision;i++)
-        // {
-        //     form += "0";
-        // }
-
-        // VArrowContainer.text.SetText(currentVel.magnitude.ToString(form) + " m/s");
-        // AArrowContainer.text.SetText(currentAcc.magnitude.ToString(form) + " m/s�");
-
-        // // make sure it's rotated towards camera
-
-        // VArrowContainer.text.transform.rotation = Quaternion.LookRotation(currentPos, Vector3.up);
-        // AArrowContainer.text.transform.rotation = Quaternion.LookRotation(currentPos, Vector3.up);
-
-        // scale the arrows
-
-        // VArrowContainer.body.transform.localScale = new Vector3(1f, lengthScaling*currentVel.magnitude, 1f);
-        // AArrowContainer.body.transform.localScale = new Vector3(1f, lengthScaling*currentAcc.magnitude, 1f);
-
-        // move the canvas appropriately
-
-        // VArrowContainer.canvas.transform.localPosition = new Vector3(0, 0, 0.1f * lengthScaling * currentVel.magnitude + 0.02f);
-        // AArrowContainer.canvas.transform.localPosition = new Vector3(0, 0, 0.1f * lengthScaling * currentAcc.magnitude + 0.02f);
     }
 
 
@@ -235,7 +188,6 @@ public class center : MonoBehaviour
         Vector3 acc = new Vector3(0, 0, 0);
         float accChangeRate = 0.1f;
 
-        //vel = (.5f * (pastPos[0] - pastPos[1]) / pastTime[0] + .25f * (pastPos[1] - pastPos[2]) / pastTime[1] + .25f * (pastPos[2] - pastPos[3]) / pastTime[2]);
         vel = rb.velocity;
         acc = (.5f * ((pastPos[0] - pastPos[1]) / pastTime[0] - (pastPos[1] - pastPos[2]) / pastTime[1]) / pastTime[0]
             + .25f * ((pastPos[1] - pastPos[2]) / pastTime[1] - (pastPos[2] - pastPos[3]) / pastTime[2]) / pastTime[1]

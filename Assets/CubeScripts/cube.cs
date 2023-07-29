@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+* Author: Levi Busching
+* Description: Takes care of the cube GameObject: including the position, orientation, gravity, coefficient of friction, and visibility.
+*/
+
 public class cube : MonoBehaviour
 {
     launchEM launch;
@@ -10,20 +15,20 @@ public class cube : MonoBehaviour
 
     public GameObject anchor;
     public GameObject pivot;
-    public GameObject block;
-    public Rigidbody rb;
+    public GameObject block;        // the cube (couldn't name it "cube" as this is the script name)
+    public Rigidbody rb;            // Rigidbody of the cube
 
     Collider coll;
     MeshRenderer MR;
 
-    int test = 1;
-    bool active = false;
+    bool test = true;               // if the cube is at the starting position
+    bool active = false;            // if the cube is visible
     float dynamicFriction = 0.3f;   // good starting value
     float staticFriction = 0.3f;  
 
     void Start() {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
+        rb.useGravity = false;     // no gravity before launch
 
         coll = GetComponent<Collider>();
         MR = GetComponent<MeshRenderer>();
@@ -42,9 +47,9 @@ public class cube : MonoBehaviour
         visibleEM.onBlock += toggleVisibility;
     }
 
-    void Update() {
-        if (test == 1) {
-            transform.position = anchor.transform.position;
+    void Update() { 
+        if (test) {         // moves cube to starting position/orientation
+            transform.position = anchor.transform.position;                 
             transform.eulerAngles = pivot.transform.eulerAngles;
         }
         coll.material.dynamicFriction = dynamicFriction;
@@ -52,12 +57,12 @@ public class cube : MonoBehaviour
     }
 
     void Launch() {
-        test = 0;
+        test = false;
         rb.useGravity = true;
     }
 
     void Reset() {
-        test = 1;
+        test = true;
         rb.useGravity = false;
         transform.position = anchor.transform.position;
     }

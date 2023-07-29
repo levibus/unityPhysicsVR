@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Toggles the visibility (activity) of the velocity arrow. This arrow will become inactive when the cube hits the ground.
+*              Along with the rest of the arrows, it can be turned on and off by touching the velocitySnap UI button.
+*/
+
 public class velocityArrow : MonoBehaviour
 {
     public event Action onArrowDestruction;
@@ -13,7 +19,7 @@ public class velocityArrow : MonoBehaviour
 
     public GameObject arrow;
     public GameObject anchor;
-    public Rigidbody rb;
+    public Rigidbody rb;               // cube Rigidbody
 
     bool active = true;
 
@@ -31,17 +37,17 @@ public class velocityArrow : MonoBehaviour
         arrow.SetActive(true);
     }
 
-    void turnOff() {
+    void turnOff() {                   // turned off when the cube hits the ground
         arrow.SetActive(false);
     }
 
-    void turnOn() {
+    void turnOn() {                    // turned on when the cube is reset (if arrow is active)
         if (active) {
             arrow.SetActive(true);
         }
     }
 
-    void arrowOn() {
+    void arrowOn() {                   // toggles if the arrow is active
         if (!active) {
             arrow.SetActive(true);
             active = true;
@@ -54,7 +60,7 @@ public class velocityArrow : MonoBehaviour
         }
     }
 
-    void ArrowDestruction() {
+    void ArrowDestruction() {        // event that toggles when the arrow activity status is changed
         if (onArrowDestruction != null) {
             onArrowDestruction();
         }

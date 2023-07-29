@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the buttons are pushed to turn the arrows on/off.
+*/
+
 public class arrowUI : MonoBehaviour
 {
 
@@ -42,7 +47,7 @@ public class arrowUI : MonoBehaviour
         }
     }
 
-    void Update() {
+    void Update() {                         // can also use keybindings while in the Unity play mode
         if (Input.GetKeyUp("v")) {
             onVelocity();
         }
