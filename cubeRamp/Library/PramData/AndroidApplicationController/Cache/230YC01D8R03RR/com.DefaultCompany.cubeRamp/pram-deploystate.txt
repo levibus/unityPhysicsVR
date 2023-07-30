@@ -1,0 +1,12 @@
+assets/bin/Data/boot.config:459-638261683766055495
+assets/bin/Data/data.unity3d:17729297-638261676931433119
+assets/bin/Data/Managed/Metadata/global-metadata.dat:6806972-638261684026472306
+assets/bin/Data/Managed/Resources/mscorlib.dll-resources.dat:337563-638261684025681992
+assets/bin/Data/RuntimeInitializeOnLoads.json:1073-638253093366236001
+assets/bin/Data/ScriptingAssemblies.json:3405-638253093367089959
+assets/bin/Data/sharedassets0.resource:704-638261676930467641
+assets/bin/Data/unity default resources:1110488-638253093359117688
+assets/bin/Data/unity_app_guid:36-638261684028882135
+assets/bin/Data/UnitySubsystems/OculusXRPlugin/UnitySubsystemsManifest.json:365-638253093366236001
+jniLibs/arm64-v8a/libil2cpp.so:39025168-638261684796361688
+jniLibs/arm64-v8a/libmain.so:8704-638253093353778687
