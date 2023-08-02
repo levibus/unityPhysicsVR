@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+* Author: Levi Busching
+* Description: A class to keep track of the starting position of the ball with getters and setters.
+*/
+
 public class startingPosition : MonoBehaviour
 {
     private Vector3 position;

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the buttons are pushed to launch and reset the ball.
+*/
+
 public class EventManager : MonoBehaviour
 {
-
     public event Action onBallLaunch;
     public event Action onBallReset;
   
@@ -21,7 +25,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    void Update() {
+    void Update() {                             // can also use keybindings while in the Unity play mode
         if (Input.GetKeyUp("space")) {
             onBallLaunch();
         }

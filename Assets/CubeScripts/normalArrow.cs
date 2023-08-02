@@ -16,6 +16,7 @@ public class normalArrow : MonoBehaviour
     public GameObject origin;              // the origin of the raycast
     public GameObject pivot;
     public GameObject anchor;
+    public GameObject velocityArrow;       // velocity arrow
     public GameObject normalArrowObject;   // normal arrow
     public GameObject yArrowHolder;        // yGravity arrow
     public GameObject xArrowHolder;        // xGravity arrow
@@ -56,6 +57,8 @@ public class normalArrow : MonoBehaviour
             xArrowHolder.transform.eulerAngles = new Vector3(xGravityXCoordinate, 180.0f, 180.0f);     // 90 degrees different from yGravity
             frictionArrow.transform.position = cubeHolder.transform.position;
             frictionArrow.transform.eulerAngles = xArrowHolder.transform.eulerAngles + reverseDirection;   // opposite direction from xGravity
+            velocityArrow.transform.position = cubeHolder.transform.position;
+            velocityArrow.transform.eulerAngles = xArrowHolder.transform.eulerAngles;
 
             angle = normalArrowObject.transform.eulerAngles.x;        // x component of the normal from the raycast
         }
@@ -91,6 +94,8 @@ public class normalArrow : MonoBehaviour
         if (dynamicFriction < 0.1f) {
             frictionArrow.transform.localScale = new Vector3(0.25f, 0.0f, 0.25f);       // makes sure friction isn't negative
         }
+
+        velocityArrow.transform.localScale = new Vector3(0.25f, rb.velocity.magnitude, 0.25f);
     }
 
     void increaseDynoFriction() {

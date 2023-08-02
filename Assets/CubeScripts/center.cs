@@ -33,7 +33,7 @@ public class center : MonoBehaviour
     public Vector3 currentAcc; // the acceleration " "
 
     public int reportedPrecision = 1; // number of decimal places
-    public float lengthScaling = 1000.0f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
+    public float lengthScaling = 1.0f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
 
 
     // --FOR TESTING--
@@ -151,7 +151,7 @@ public class center : MonoBehaviour
         }
         else {
             velArrowObject.SetActive(true);
-            velArrowObject.transform.localScale = new Vector3(0.25f, lengthScaling * rb.velocity.magnitude, 0.25f);
+            velArrowObject.transform.localScale = new Vector3(0.25f, /*lengthScaling * rb.velocity.magnitude */ 1.0f, 0.25f);
         }
 
     }

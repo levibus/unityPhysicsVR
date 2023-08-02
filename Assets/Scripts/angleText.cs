@@ -2,24 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+
+/*
+* Author: Levi Busching
+* Description: Creates the text UI for the launch height, launch force, and launch angle of the ball.
+*/
  
 public class angleText : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI text;
     angleEM angleEventManager;
     speedEM speedEventManager;
     heightEM heightEventManager;
 
-    public float launchAngle = 45.0f;
-    public float launchSpeed = 500.0f;
-    public float height = 0.0f;
+    public TMP_Text label;                      // the text GameObject
+    public float launchAngle = 45.0f;           // starting values
+    public float launchSpeed = 500.0f;          
+    public float height = 0.0f;                 
  
     private void Start()
     {
-        // Get a reference to the text component.
-        // Since we are using the base class type <TMP_Text> this component could be either a <TextMeshPro> or <TextMeshProUGUI> component.
-        text.text = "Angle: " + launchAngle + "\u00B0" + "\n" + "Force: " + (launchSpeed / 10f) + "N" + "\n" +
-                    "Height: " + (height) + "m";
+        label.text = "Angle: " + launchAngle + "\u00B0" + "\n" + "Force: " + (launchSpeed / 10f) + "N" + "\n" +
+                    "Height: " + (height) + "m";          // starting values
 
         angleEventManager = FindObjectOfType<angleEM>();
         angleEventManager.onAngleIncrease += increaseAngle;
@@ -35,8 +38,8 @@ public class angleText : MonoBehaviour
     }
 
     private void Update() {
-        text.text = "Angle: " + launchAngle + "\u00B0" + "\n" + "Force: " + (launchSpeed / 10f) + "N" + "\n" +
-                    "Height: " + (height) + "m";
+        label.text = "Angle: " + launchAngle + "\u00B0" + "\n" + "Force: " + (launchSpeed / 10f) + "N" + "\n" +
+                    "Height: " + height + "m";          // updated values, launchSpeed is scaled to make it more appropriate
     }
 
     void increaseAngle() {

@@ -18,9 +18,7 @@ public class velocityArrow : MonoBehaviour
     launchEM resetEM;
 
     public GameObject arrow;
-    public GameObject anchor;
-    public Rigidbody rb;               // cube Rigidbody
-
+    
     bool active = true;
 
     void Start()
