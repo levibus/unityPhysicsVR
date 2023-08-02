@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+* Author: Levi Busching
+* Description: Signals when the buttons are pushed to increase/decrease the height of the ball.
+*/
+
 public class heightEM : MonoBehaviour
 {
 
@@ -21,7 +26,7 @@ public class heightEM : MonoBehaviour
         }
     }
 
-    void Update() {
+    void Update() {                                   // can also use keybindings while in the Unity play mode
         if (Input.GetKeyUp("w")) {
             onHeightIncrease();
         }

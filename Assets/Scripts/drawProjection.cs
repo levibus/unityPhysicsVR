@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+* Author: Levi Busching
+* Description: Draws the projected launch path of the ball.
+*/
+
 public class drawProjection : MonoBehaviour
 {
     LineRenderer lineRenderer;
@@ -10,23 +15,23 @@ public class drawProjection : MonoBehaviour
     speedEM speedEventManager;
     heightEM height1EventManager;
     startingPosition startPos;
+
     public BallScript ball;
 
-    public int numPoints = 25;
-    public float timeBetweenPoints = 0.04f;
+    // these two lines contribute to the length and smoothness of the projected path
+    public int numPoints = 100;                         
+    public float timeBetweenPoints = 0.05f;
 
-    public float launchAngle = 45.0f;
-    public float launchSpeed1 = 500.0f;
-    public float height1 = 0.2f;
+    float launchAngle = 45.0f;                  // starting values
+    float launchSpeed1 = 500.0f;
+    float height1 = 0.2f;
+    int layerMask = 1<<7;          // the collidable layer that will stop the line from being rendered
 
-    public LayerMask CollidableLayers;
-    
-    // Start is called before the first frame update
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
 
-        startPos = new startingPosition(height1);
+        startPos = new startingPosition(height1);   // starting height
 
         angleEventManager = FindObjectOfType<angleEM>();
         angleEventManager.onAngleIncrease += increaseAngle;
@@ -41,48 +46,31 @@ public class drawProjection : MonoBehaviour
         height1EventManager.onHeightDecrease += decreaseHeight1;
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     lineRenderer.positionCount = numPoints;
-    //     List<Vector3> points = new List<Vector3>();
-    //     Vector3 position = new Vector3(0.0f, 1.5f, 0.0f);
-    //     float normalizedAngle = launchAngle / 90.0f;
-    //     Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
-    //     Vector3 startingVelocity = angle * (launchSpeed1 / 10.0f);
-
-    //     for (float t = 0.0f; t < numPoints; t += timeBetweenPoints) {
-    //         Vector3 newPoint = position + t * startingVelocity;
-    //         newPoint.y = position.y + position.y * t + Physics.gravity.y/2f * t * t;
-    //         points.Add(newPoint);
-
-    //         if (Physics.OverlapSphere(newPoint, 2, CollidableLayers).Length > 1) {
-    //             lineRenderer.positionCount = points.Count;
-    //             break;
-    //         }
-    //     }
-    //     lineRenderer.SetPositions(points.ToArray());
-    // }
-
     void Update()
     {
         startPos.setPosition(height1);
         lineRenderer.positionCount = numPoints;
         List<Vector3> points = new List<Vector3>();
-        Vector3 startingPosition = startPos.getPosition();
+        Vector3 startingPosition = startPos.getPosition();  
+
+        // remaps the angle from 0-90 to 0-1
         float normalizedAngle = launchAngle / 90.0f;
         Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
-        Vector3 startingVelocity = angle * (launchSpeed1 / 50.0f);
-        for (float t = 0.0f; t < numPoints; t += timeBetweenPoints) {
+
+        Vector3 startingVelocity = angle * (launchSpeed1 / 50.0f);              // scales the velocity
+
+        for (float t = 0.0f; t < numPoints; t += timeBetweenPoints) {           // finds the next point based on the current point and velocity
             Vector3 newPoint = startingPosition + t * startingVelocity;
             newPoint.y = startingPosition.y + startingVelocity.y * t + Physics.gravity.y/2f * t * t;
             points.Add(newPoint);
-            if (Physics.OverlapSphere(newPoint, 2, CollidableLayers).Length > 0) {
+
+            if (Physics.OverlapSphere(newPoint, 1, layerMask).Length > 0) {         // breaks if a certain layer is hit
                 lineRenderer.positionCount = points.Count;
                 break;
             }
+
         }
-        lineRenderer.SetPositions(points.ToArray());
+        lineRenderer.SetPositions(points.ToArray());        // draws line
     }
 
     void increaseAngle() {

@@ -3,21 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/*
+* Authors: Evan Bourke and Levi Busching
+* Description: Modifies the velocity and acceleration arrows inflight and before the launch. Calculates the velocity and acceleration 
+*              to change the position, orientation, and scaling of the arrows, as well as changes their activity status.
+*/
+
 public class ObjectCenter : MonoBehaviour
 {
     // Class variables
 
+    EventManager launchEventManager;
     angleEM angleEventManager;
     speedEM speedEventManager;
     heightEM heightEventManager;
     startingPosition startPos;  // a class that can get and set the starting position... used for changing the height of the launch
 
     public Rigidbody rb; 
-    float normalizedVelAngle = 0.0f;
+    float normalizedVelAngle = 0.0f;           // used to normalized angles
     float normalizedAccAngle = 0.0f;
-    public float normalizedSpeed = 2.0f;
-        public float height = 0.2f;
-
+    float scaleDown = 0.25f;                   // scales the arrows 
+    float normalizedSpeed = 2.0f;              // starting value for a scaled-down speed
+    float height = 0.2f;                       // starting height
+    bool launch = false;                       // true if ball as launched (and is in motion)
 
     public GameObject velArrowObject; // the empty game object made so that the arrow rotates correctly
     public GameObject accArrowObject; // ditto
@@ -39,7 +47,7 @@ public class ObjectCenter : MonoBehaviour
     // private ArrowContainer AArrowContainer; // ditto
 
     public int reportedPrecision = 2; // number of decimal places
-    public float lengthScaling = 0.01f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
+    public float lengthScaling = 1f; // the muliplicative scaling of the length of the arrows. The arrows are 1*lengthScaling meters at 1m/s(/s)
 
 
     // --FOR TESTING--
@@ -59,6 +67,11 @@ public class ObjectCenter : MonoBehaviour
         }
 
         startPos = new startingPosition(height);
+        rb = GetComponent<Rigidbody>();
+
+        launchEventManager = FindObjectOfType<EventManager>();
+        launchEventManager.onBallLaunch += accActive;
+        launchEventManager.onBallReset += accInactive;
 
         angleEventManager = FindObjectOfType<angleEM>();
         angleEventManager.onAngleIncrease += increaseAngle;
@@ -71,16 +84,6 @@ public class ObjectCenter : MonoBehaviour
         heightEventManager = FindObjectOfType<heightEM>();
         heightEventManager.onHeightIncrease += increaseHeight;
         heightEventManager.onHeightDecrease += decreaseHeight;
-
-        rb = GetComponent<Rigidbody>();
-
-        // instatiate the arrows from the assigned prefabs and replace the prefabs with these actual objects
-        // velArrow = Instantiate(velArrow, transform.position, transform.rotation);
-        // accArrow = Instantiate(accArrow, transform.position, transform.rotation);
-
-        // // find the arrows' containers
-        // VArrowContainer = velArrow.GetComponent<ArrowContainer>();
-        // AArrowContainer = accArrow.GetComponent<ArrowContainer>();
 
         // setup for position and time
         pastPos = new Vector3[positionSize];
@@ -149,6 +152,14 @@ public class ObjectCenter : MonoBehaviour
         currentAcc = tempAcc;
     }
 
+    void accActive() {
+        launch = true;
+    }
+
+    void accInactive() {
+        launch = false;
+    }
+
     void increaseAngle() {
         if (launchAngle > 0.0f) {
             launchAngle -= 5.0f;
@@ -180,7 +191,7 @@ public class ObjectCenter : MonoBehaviour
     }
 
     void decreaseHeight() {
-        if (height > 1.2f) {
+        if (height > 1.1f) {
             height--;
         }
     } 
@@ -195,29 +206,24 @@ public class ObjectCenter : MonoBehaviour
 
         //rotate arrows
 
-        // float normalizedAngle = launchAngle / 90.0f;
-        // Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
+        
         if (rb.velocity.y + rb.velocity.z != 0) {
-            normalizedVelAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);     // makes the angle into a ratio of 0 - 1 to 0 - 90
+            normalizedVelAngle = 90.0f * rb.velocity.y / (Mathf.Abs(rb.velocity.y) + rb.velocity.z);              // makes the angle into a ratio of 0-1 to 0-90
         }
-
         velArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedVelAngle), 0.0f, 0.0f);             // points the velocity arrow in correct direction
-        // Debug.Log("vel: " + velArrowObject.transform.eulerAngles);
 
         if (currentAcc.y + currentAcc.z != 0) {
-            normalizedAccAngle = 90.0f * currentAcc.y / (Mathf.Abs(currentAcc.y) + Mathf.Abs(currentAcc.z));     // makes the angle into a ratio of 0 - 1 to 0 - 90
+            normalizedAccAngle = 90.0f * currentAcc.y / (Mathf.Abs(currentAcc.y) + Mathf.Abs(currentAcc.z));      // makes the angle into a ratio of 0-1 to 0-90
         }
+        accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), 0.0f, 0.0f);             // points the acceleration arrow in correct direction
 
-        accArrowObject.transform.eulerAngles = new Vector3((90.0f - normalizedAccAngle), 0.0f, 0.0f);
-        // Debug.Log("acc: " + accArrowObject.transform.eulerAngles);
         // if acceleration or velocity magnitude is too small, don't display corresponding arrow
-
-        float minSize = Mathf.Pow(10, -reportedPrecision + 1) + 0.5f;
+        float minSize = Mathf.Pow(10, -reportedPrecision + 1) + 0.5f;                                 
 
         if (transform.position == startPos.getPosition()) {
             velArrowObject.SetActive(true);
-            normalizedSpeed = launchSpeed1 / 250.0f;
-            velArrowObject.transform.localScale = new Vector3(1.0f, normalizedSpeed, 1.0f);          // using a scaling factor of 4
+            normalizedSpeed = launchSpeed1 / 200.0f;                                                         // scales the speed because launching works well but the arrow is too long
+            velArrowObject.transform.localScale = new Vector3(1f, normalizedSpeed, 1f) * scaleDown;          // using a scaling factor
             velArrowObject.transform.eulerAngles = new Vector3(launchAngle, 0.0f, 0.0f);
         }
         if (currentVel.magnitude <= minSize && transform.position != startPos.getPosition())
@@ -226,44 +232,18 @@ public class ObjectCenter : MonoBehaviour
         }
         else if (transform.position != startPos.getPosition()) {
             velArrowObject.SetActive(true);
-            velArrowObject.transform.localScale = new Vector3(1f, lengthScaling * rb.velocity.magnitude, 1f);
+            velArrowObject.transform.localScale = new Vector3(1f, lengthScaling * rb.velocity.magnitude, 1f) * scaleDown;   // scales velocity arrow
         }
 
-        if (currentAcc.magnitude <= minSize || transform.position == startPos.getPosition())
+        if (currentAcc.magnitude <= minSize || !launch)
         {
             accArrowObject.SetActive(false);
         }
         else
         {
             accArrowObject.SetActive(true);
-            accArrowObject.transform.localScale = new Vector3(1f, lengthScaling * currentAcc.magnitude, 1f);
+            accArrowObject.transform.localScale = new Vector3(1f, lengthScaling * currentAcc.magnitude * 0.5f, 1f) * scaleDown;    // scales accleration arrow
         }
-
-        // change arrow text
-
-        // string form = "0.";
-        // for (int i = 0; i<reportedPrecision;i++)
-        // {
-        //     form += "0";
-        // }
-
-        // VArrowContainer.text.SetText(currentVel.magnitude.ToString(form) + " m/s");
-        // AArrowContainer.text.SetText(currentAcc.magnitude.ToString(form) + " m/s�");
-
-        // // make sure it's rotated towards camera
-
-        // VArrowContainer.text.transform.rotation = Quaternion.LookRotation(currentPos, Vector3.up);
-        // AArrowContainer.text.transform.rotation = Quaternion.LookRotation(currentPos, Vector3.up);
-
-        // scale the arrows
-
-        // VArrowContainer.body.transform.localScale = new Vector3(1f, lengthScaling*currentVel.magnitude, 1f);
-        // AArrowContainer.body.transform.localScale = new Vector3(1f, lengthScaling*currentAcc.magnitude, 1f);
-
-        // move the canvas appropriately
-
-        // VArrowContainer.canvas.transform.localPosition = new Vector3(0, 0, 0.1f * lengthScaling * currentVel.magnitude + 0.02f);
-        // AArrowContainer.canvas.transform.localPosition = new Vector3(0, 0, 0.1f * lengthScaling * currentAcc.magnitude + 0.02f);
     }
 
 

@@ -3,30 +3,32 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.XR;
 
+/*
+* Author: Levi Busching
+* Description: Takes care of ball movement and starting position. It contains the functions to launch and reset the ball.
+*/
+
 public class BallScript : MonoBehaviour
 {
-
     EventManager eventManager;
     angleEM angleEventManager;
     speedEM speedEventManager;
     heightEM heightEventManager;
     startingPosition startPos;
 
-    public int test = 0;
-    public float height = 0.2f;
-
     public Rigidbody rb;
-    public Vector3 velocityVector;
-    public Vector3 positionVector;
-    public float launchAngle = 45.0f;
-    public float launchSpeed = 500.0f;
+    
+    bool launch = false;                  // true if the ball is launched (and in motion)
+    float height = 0.2f;                  // starting values
+    float launchAngle = 45.0f;
+    float launchSpeed = 500.0f;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();   // starts stationary (without gravity)
         rb.useGravity = false;
        
-        startPos = new startingPosition(height);
+        startPos = new startingPosition(height);        // starting height
 
         eventManager = FindObjectOfType<EventManager>();
         eventManager.onBallLaunch += LaunchBall;
@@ -82,28 +84,28 @@ public class BallScript : MonoBehaviour
     }
 
     void decreaseHeight() {
-        if (height > 1.2f) {
+        if (height > 1.1f) {
             height--;
         }
     } 
 
     public void LaunchBall() {
-        test = 1;
+        launch = true;
         rb.useGravity = true;
-        float normalizedAngle = launchAngle / 90.0f;
+        float normalizedAngle = launchAngle / 90.0f;            // changes angle from a range of 0-90 to 0-1
         Vector3 angle = new Vector3(0.0f, normalizedAngle, (1.0f - normalizedAngle));
         rb.AddForce(launchSpeed * angle);
     }
 
     public void reset() {
-        test = 0;
+        launch = false;
         rb.useGravity = false;
         rb.position = startPos.getPosition();
         rb.velocity = Vector3.zero;
     }
 
     public void ballStartPosition() {
-        if (test == 0) {
+        if (!launch) {
             transform.position = startPos.getPosition();
         }
     }
